@@ -6,3 +6,9 @@ def est_deja_vu(sig: Signal, vus: set) -> bool:
         return True
     vus.add(cle)
     return False
+
+def compter_echecs(sig: Signal, compteur: dict) -> int:
+    if sig.type != "LOGIN_ECHEC":
+        return 0
+    compteur[sig.ip] = compteur.get(sig.ip, 0) + 1
+    return compteur[sig.ip]
