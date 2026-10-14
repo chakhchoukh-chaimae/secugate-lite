@@ -22,5 +22,4 @@ secugate-lite/
 ├── __init__.py (fichier vide)
 ├── test_collecte.py (A)
 ├── test_detection.py (B)
->>>>>>> c549d0ec126d25260b7ffdb8c710d3ce92164f50
 └── test_alerte.py (C)
