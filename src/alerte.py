@@ -1,3 +1,4 @@
+from src.contrat import Alerte
 
 def choisir_canal(niveau: str) -> str:
     canaux = {
@@ -20,3 +21,14 @@ def rediger(sig, verdict) -> str:
         f"Action proposee : {verdict.action}",
         f"Sources : {', '.join(verdict.sources)}",
     ])
+
+def alerter(sig, verdict, journal):
+    alerte = Alerte(
+        signal_id=sig.id,
+        canal=choisir_canal(verdict.niveau),
+        destinataire="equipe-secu",
+        texte=rediger(sig, verdict),
+    )
+    journal.append(alerte)
+    sig.statut = "ALERTE"
+    return alerte

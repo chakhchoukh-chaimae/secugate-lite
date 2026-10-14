@@ -1,6 +1,6 @@
 
 import unittest
-from src.alerte import choisir_canal, rediger
+from src.alerte import choisir_canal, rediger, alerter
 from src.contrat import Signal, Verdict
 
 
@@ -46,6 +46,34 @@ class TestAlerte(unittest.TestCase):
             rediger(s, v).split("\n")[4],
             "Sources : ACCES, SCAN"
         )
+
+    
+    def test_alerter(self):
+        s, v = exemple()
+        journal = []
+        a = alerter(s, v, journal)
+
+        self.assertEqual(a.signal_id, "SIG-00125")
+        self.assertEqual(a.canal, "TELEPHONE")
+        self.assertEqual(a.destinataire, "equipe-secu")
+        self.assertEqual(a.texte, rediger(s, v))
+        self.assertEqual(journal, [a])
+        self.assertEqual(s.statut, "ALERTE")
+
+    def test_alerter_historise(self):
+        s, v = exemple()
+        journal = []
+        alerter(s, v, journal)
+        alerter(s, v, journal)
+        self.assertEqual(len(journal), 2)
+
+    def test_alerter_niveau_invalide(self):
+        s, v = exemple(niveau="URGENT")
+        journal = []
+        with self.assertRaises(ValueError):
+            alerter(s, v, journal)
+        self.assertEqual(journal, [])
+
 
 
 if __name__ == "__main__":
