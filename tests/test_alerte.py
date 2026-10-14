@@ -1,6 +1,6 @@
 
 import unittest
-from src.alerte import choisir_canal, rediger, alerter
+from src.alerte import choisir_canal, rediger, alerter, valider_action
 from src.contrat import Signal, Verdict
 
 
@@ -73,6 +73,26 @@ class TestAlerte(unittest.TestCase):
         with self.assertRaises(ValueError):
             alerter(s, v, journal)
         self.assertEqual(journal, [])
+    
+    def test_validation(self):
+        _, v = exemple()
+        self.assertTrue(valider_action(v, " OUI "))
+        self.assertFalse(valider_action(v, "n"))
+
+    def test_validation_reponses_acceptees(self):
+        _, v = exemple()
+        for rep in ("o", "O", "oui", "Ok", "YES", "  yes  "):
+            self.assertTrue(valider_action(v, rep), rep)
+
+    def test_validation_reponses_refusees(self):
+        _, v = exemple()
+        for rep in ("", "non", "no", "peut-etre"):
+            self.assertFalse(valider_action(v, rep), rep)
+
+    def test_validation_action_non_sensible(self):
+        _, v = exemple(sensible=False)
+        self.assertTrue(valider_action(v, "n"))
+    
 
 
 

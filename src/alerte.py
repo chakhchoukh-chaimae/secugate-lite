@@ -32,3 +32,10 @@ def alerter(sig, verdict, journal):
     journal.append(alerte)
     sig.statut = "ALERTE"
     return alerte
+
+def valider_action(verdict, reponse: str) -> bool:
+    if not verdict.sensible:
+        return True
+
+    reponse = "".join(reponse.split()).lower()
+    return reponse in ("o", "oui", "ok", "yes")
