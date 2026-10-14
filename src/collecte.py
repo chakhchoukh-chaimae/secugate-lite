@@ -42,4 +42,12 @@ def normaliser_acces(ligne: str, numero: int, cible: str = "web-app") -> Signal:
 
 
 def normaliser_scan(rapport: dict, numero: int) -> Signal:
-    raise NotImplementedError
+    for cle in ("rule", "component", "severity", "message", "date"):
+        if cle not in rapport:
+            raise ValueError(f"Clé manquante : {cle}")
+    table = {"blocker": "CRITIQUE", "critical": "ELEVEE",
+             "major": "MOYENNE", "minor": "FAIBLE"}
+    gravite = table.get(rapport["severity"].lower(), "FAIBLE")
+    message = f"Faille {rapport['rule']} : {rapport['message']}"
+    return Signal(f"SIG-{numero:05d}", rapport["date"], "SCAN", "",
+                  rapport["component"], "FAILLE", gravite, message)

@@ -1,8 +1,12 @@
 import unittest
 
-from src.collecte import masquer_ip, masquer_parametres, normaliser_acces
+from src.collecte import (masquer_ip, masquer_parametres, normaliser_acces,
+                          normaliser_scan)
 
 LIGNE = "2026-10-05 10:01:10 192.168.1.15 POST /login 401"
+
+RAPPORT = {"rule": "S3649", "component": "backend", "severity": "blocker",
+           "message": "injection SQL possible", "date": "2026-10-05T10:05:00Z"}
 
 
 class TestCollecte(unittest.TestCase):
@@ -46,6 +50,26 @@ class TestCollecte(unittest.TestCase):
     def test_ligne_trop_courte(self):
         with self.assertRaises(ValueError):
             normaliser_acces("2026-10-05 10:00:01 10.0.0.5", 1)
+
+    def test_normaliser_scan(self):
+        sig = normaliser_scan(RAPPORT, 7)
+        self.assertEqual(sig.id, "SIG-00007")
+        self.assertEqual(sig.source, "SCAN")
+        self.assertEqual(sig.ip, "")
+        self.assertEqual(sig.cible, "backend")
+        self.assertEqual(sig.type, "FAILLE")
+        self.assertEqual(sig.gravite, "CRITIQUE")
+        self.assertEqual(sig.message, "Faille S3649 : injection SQL possible")
+
+    def test_scan_gravite_inconnue(self):
+        r = dict(RAPPORT, severity="Bizarre")
+        self.assertEqual(normaliser_scan(r, 1).gravite, "FAIBLE")
+
+    def test_scan_cle_manquante(self):
+        r = dict(RAPPORT)
+        del r["rule"]
+        with self.assertRaises(ValueError):
+            normaliser_scan(r, 1)
 
 
 if __name__ == "__main__":
