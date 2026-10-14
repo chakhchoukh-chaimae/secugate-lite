@@ -10,3 +10,8 @@ def test_compter(self):
     self.assertEqual(compter_echecs(e, c), 1)
     self.assertEqual(compter_echecs(e, c), 2)
     self.assertEqual(compter_echecs(sig(), c), 0)
+
+def test_procedures(self):
+    e = sig("LOGIN_ECHEC", "MOYENNE", "POST /login -> 401")
+    self.assertEqual(len(chercher_procedures(e, PROCEDURES)), 1)
+    self.assertEqual(chercher_procedures(sig(), PROCEDURES), [])
