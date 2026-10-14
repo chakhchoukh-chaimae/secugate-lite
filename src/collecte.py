@@ -1,3 +1,5 @@
+import re
+
 from src.contrat import Signal
 
 
@@ -9,7 +11,8 @@ def masquer_ip(ip: str) -> str:
 
 
 def masquer_parametres(chemin: str) -> str:
-    raise NotImplementedError
+    return re.sub(r"(?i)\b(token|password|session|key)=[^&\s]*",
+                  lambda m: m.group(1) + "=[MASQUE]", chemin)
 
 
 def normaliser_acces(ligne: str, numero: int, cible: str = "web-app") -> Signal:
