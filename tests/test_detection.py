@@ -15,3 +15,11 @@ def test_procedures(self):
     e = sig("LOGIN_ECHEC", "MOYENNE", "POST /login -> 401")
     self.assertEqual(len(chercher_procedures(e, PROCEDURES)), 1)
     self.assertEqual(chercher_procedures(sig(), PROCEDURES), [])
+
+def test_analyser(self):
+    e = sig("LOGIN_ECHEC", "MOYENNE", "POST /login -> 401")
+    v = analyser(e, PROCEDURES, 5)
+    self.assertEqual(v.niveau, "CRITIQUE")
+    self.assertEqual(v.action, "Bloquer l'IP 10.0.0.5")
+    self.assertTrue(v.sensible)
+    self.assertEqual(e.statut, "ANALYSE")
