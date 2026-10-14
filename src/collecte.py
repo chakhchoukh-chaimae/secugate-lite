@@ -16,7 +16,29 @@ def masquer_parametres(chemin: str) -> str:
 
 
 def normaliser_acces(ligne: str, numero: int, cible: str = "web-app") -> Signal:
-    raise NotImplementedError
+    champs = ligne.split()
+    if len(champs) < 6:
+        raise ValueError(f"Ligne invalide : {ligne}")
+    date, heure, ip, methode, chemin, statut = champs[:6]
+    statut = int(statut)
+    chemin_nu = chemin.split("?")[0]
+
+    if chemin_nu == "/login" and statut in (401, 403):
+        type_ = "LOGIN_ECHEC"
+    else:
+        type_ = "ACCES"
+
+    if statut >= 500:
+        gravite = "ELEVEE"
+    elif statut >= 400:
+        gravite = "MOYENNE"
+    else:
+        gravite = "FAIBLE"
+
+    message = (f"{methode} {masquer_parametres(chemin)} -> {statut} "
+               f"depuis {masquer_ip(ip)}")
+    return Signal(f"SIG-{numero:05d}", f"{date}T{heure}Z", "ACCES", ip,
+                  cible, type_, gravite, message)
 
 
 def normaliser_scan(rapport: dict, numero: int) -> Signal:
