@@ -50,3 +50,4 @@ def valider_action(verdict: Verdict, reponse: str) -> bool:
 
     reponse = "".join(reponse.split()).lower()
     return reponse in ("o", "oui", "ok", "yes")
+
