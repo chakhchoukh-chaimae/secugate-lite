@@ -1,3 +1,12 @@
+  
+from secugate.alerte import (
+    compter_echecs,
+    est_deja_vu,
+    chercher_procedures,
+    PROCEDURES,
+)
+from src.detection import sig, analyser
+
 def test_doublon_different(self):
     vus = set()
     est_deja_vu(sig(), vus)
